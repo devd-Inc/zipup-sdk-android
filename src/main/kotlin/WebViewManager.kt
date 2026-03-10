@@ -30,6 +30,11 @@ data class SDKClientConfig(
     val safeArea: SafeArea?,
 )
 
+/** test(data:)로 테스트 URL을 설정할 때 사용. */
+data class SDKTestData(
+    val testUrl: String,
+)
+
 interface SDKEventListener {
     fun onEvent(event: String, data: String)
 }
@@ -64,6 +69,7 @@ class MyWebViewManager(private val context: Context) {
     private var userPhone: String = ""
     private var proxyUrl: String = ""
     private var safeArea: SafeArea? = null
+    private var testUrl: String = ""
 
     private var eventListener: SDKEventListener? = null
     private var onReadyCallback: (() -> Unit)? = null
@@ -107,6 +113,16 @@ class MyWebViewManager(private val context: Context) {
         this.proxyUrl = data.proxyUrl
         this.isInitialized = true
 
+        return data
+    }
+
+    /** test(data:)로 설정된 테스트 URL. 비어 있지 않으면 웹뷰에서 이 URL 로드 (내부용). */
+    internal val storedTestUrl: String
+        get() = testUrl
+
+    /** 테스트 URL 설정. 설정된 경우 웹뷰는 target 대신 이 URL을 로드한다. */
+    fun test(data: SDKTestData): SDKTestData {
+        this.testUrl = data.testUrl
         return data
     }
 

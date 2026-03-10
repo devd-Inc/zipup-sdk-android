@@ -59,8 +59,9 @@ class SDKWebViewActivity : AppCompatActivity() {
                 }
             }
         }
-        
-        webView?.loadUrl(SDKConfig.target)
+
+        val urlToLoad = webViewManager?.storedTestUrl?.takeIf { it.isNotBlank() } ?: SDKConfig.target
+        webView?.loadUrl(urlToLoad)
     }
     
     private fun executeInitClient(webView: WebView) {

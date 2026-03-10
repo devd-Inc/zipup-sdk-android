@@ -1,0 +1,35 @@
+## [ 빌드 결과물 및 캐시 ]
+.gradle/
+build/
+/build
+/*/build
+bin/
+gen/
+out/
+.externalNativeBuild/
+.cxx/
+
+## [ IDE 설정 (Android Studio / IntelliJ) ]
+.idea/
+*.iml
+*.iws
+*.ipr
+/captures/
+
+## [ 로컬 환경 설정 (보안 중요 ⭐) ]
+# 로컬 SDK 경로 등이 들어있어 절대 올리면 안 됩니다.
+local.properties
+
+# 서명 키나 API 키가 포함될 수 있어 주의가 필요합니다.
+# 만약 프로젝트 공용 설정만 있다면 올려도 되지만, 
+# 보통 사내 보안 정책상 무시하는 경우가 많습니다.
+# gradle.properties 
+
+## [ OS 및 기타 ]
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+
+## [ 로그 및 임시파일 ]
+*.log

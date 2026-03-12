@@ -1,9 +1,14 @@
 package com.zipup.openapi.webview.sdk
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.View
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,7 +23,17 @@ class SDKWebViewActivity : AppCompatActivity() {
     private var userPhone: String = ""
     private var proxyUrl: String = ""
     private var webViewManager: MyWebViewManager? = null
-    
+    private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
+
+    private val fileChooserLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        val callback = fileChooserCallback
+        fileChooserCallback = null
+        if (uri != null) callback?.onReceiveValue(arrayOf(uri))
+        else callback?.onReceiveValue(null)
+    }
+
     companion object {
         @Volatile
         private var currentInstance: SDKWebViewActivity? = null
@@ -56,6 +71,19 @@ class SDKWebViewActivity : AppCompatActivity() {
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                     super.onPageStarted(view, url, favicon)
                     view?.let { executeInitClient(it) }
+                }
+            }
+            webChromeClient = object : WebChromeClient() {
+                override fun onShowFileChooser(
+                    webView: WebView?,
+                    filePathCallback: ValueCallback<Array<Uri>>?,
+                    fileChooserParams: android.webkit.WebChromeClient.FileChooserParams?
+                ): Boolean {
+                    fileChooserCallback?.onReceiveValue(null)
+                    fileChooserCallback = filePathCallback
+                    val mime = fileChooserParams?.acceptTypes?.firstOrNull()?.takeIf { it.isNotBlank() } ?: "*/*"
+                    fileChooserLauncher.launch(mime)
+                    return true
                 }
             }
         }
